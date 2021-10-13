@@ -1,36 +1,89 @@
-
-const btn = document.querySelectorAll('.btn');
-const input = document.querySelector('input');
-const btnOperator = document.querySelectorAll('btnOperator');
-
-const plus = document.querySelector('.addDigit');
-
-
-let inputVal = 0;
+let numberButtons = document.querySelectorAll('.btn');
+let calcScreen = document.getElementById('calcScreen');
+let clearBtn = document.querySelector('.allClear');
+let operatorBtn = document.querySelectorAll('.btnOperator');
+let btnEqual = document.querySelector('.btnEqual');
 
 
+function add(num1, num2) {
+    return num1 + num2;
+}
 
-btn.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-            inputVal = +(e.target.value);
-           input.value += inputVal;
-     })    
+function subtract(num1, num2) {
+    return num1 - num2;
+}
+
+function multiply(num1, num2) {
+    return num1 * num2;
+}
+
+function divide(num1, num2) {
+    return num1 / num2;
+}
+
+function operate(operator, num1, num2) {
+    switch (operator) {
+        case "add":
+            return add(num1, num2);
+        case "subtract":
+            return subtract(num1, num2);
+        case "multiply":
+            return multiply(num1, num2);
+        case "divide":
+            return divide(num1, num2);
+    }
+}
+
+let firstNumber = null;
+let secondNumber = null;
+let currentOperator = ' ';
+
+
+
+numberButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+        calcScreen.textContent += +e.target.value;
+       
+        if(currentOperator === ' '){
+            firstNumber = +calcScreen.textContent;
+        }
+        else{
+            secondNumber = +calcScreen.textContent;
+        }
+
+    })
+
 });
 
+//It is add value
+function plusOp(a,b){
+    operatorBtn[0].addEventListener('click', (e) => {
+        a = +firstNumber;
+        b = +secondNumber;
+        operatorVal = e.target.id;
+    operate(operatorVal,a,b);
+    calcScreen.textContent = ' ';
+
+        console.log(a);
+        console.log(b);
+       
+    });
+
+   
+}
+
+clearBtn.addEventListener('click', () => {
+    clearScreen();
+})
 
 
-const add = (a, b) => a + b;
-const subtract = (a, b) => a - b;
-const multiply = (a, b) => a * b;
-const divide = (a, b) => a / b;
+// btnEqual.addEventListener('click', () => {
+//     calcScreen.textContent = 'Equal sign'
+// })
 
-
-
-plus.addEventListener('click' , () => {
-    console.log(operate(add,3,2));
-
-});
-
-const operate = ((operation,a,b) => operation(a,b));
-
-
+function clearScreen() {
+    calcScreen.textContent = ' ';
+    firstNumber = 0;
+    secondNumber = 0;
+    currentOperator = ' ';
+}
