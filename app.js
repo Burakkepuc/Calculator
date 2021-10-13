@@ -1,89 +1,96 @@
-let numberButtons = document.querySelectorAll('.btn');
-let calcScreen = document.getElementById('calcScreen');
-let clearBtn = document.querySelector('.allClear');
-let operatorBtn = document.querySelectorAll('.btnOperator');
-let btnEqual = document.querySelector('.btnEqual');
+const calculatorDisplay = document.querySelector('h1');
+const inputBtns = document.querySelectorAll('button');
+const clearButton = document.getElementById('clear-btn');
 
 
-function add(num1, num2) {
-    return num1 + num2;
-}
+let firstValue = 0;
+let operatorValue = ' ';
+let awaitingNextValue = false;
 
-function subtract(num1, num2) {
-    return num1 - num2;
-}
 
-function multiply(num1, num2) {
-    return num1 * num2;
-}
 
-function divide(num1, num2) {
-    return num1 / num2;
-}
-
-function operate(operator, num1, num2) {
+function operate(a, operator, b) {
     switch (operator) {
-        case "add":
-            return add(num1, num2);
-        case "subtract":
-            return subtract(num1, num2);
-        case "multiply":
-            return multiply(num1, num2);
-        case "divide":
-            return divide(num1, num2);
+        case '*':
+            return a * b;
+        case '/':
+            return a / b;
+        case '+':
+            return a + b;
+        case '-':
+            return a - b;
+        case '=':
+            return b;
+    }
+
+}
+
+/* Press Operator Function */
+function useOperator(operator) {
+    const currentValue = Number(calculatorDisplay.textContent);
+
+    if (operatorValue && awaitingNextValue){
+    operatorValue = operator;
+    return;
+    }
+
+    if (!firstValue) {
+        firstValue = currentValue;
+    } else {
+        console.log(firstValue + operatorValue + currentValue);
+        const calculation = operate(firstValue,operatorValue,currentValue);
+        calculatorDisplay.textContent = calculation;
+        firstValue = calculation;
+    }
+    awaitingNextValue = true;
+    operatorValue = operator;
+
+}
+
+//Number buttons function
+function sendNumberValue(number) {
+
+    if (awaitingNextValue) {
+        calculatorDisplay.textContent = number;
+        awaitingNextValue = false;
+    } else {
+        const displayValue = calculatorDisplay.textContent;
+        if (displayValue === '0') {
+            calculatorDisplay.textContent = number;
+        } else {
+            calculatorDisplay.textContent = displayValue + number;
+        }
+    }
+
+
+
+}
+
+function addDecimal() {
+    //If operator pressed don't add decimal
+    if (awaitingNextValue) return;
+    if (!calculatorDisplay.textContent.includes('.')) {
+        calculatorDisplay.textContent = `${calculatorDisplay.textContent}.`
     }
 }
 
-let firstNumber = null;
-let secondNumber = null;
-let currentOperator = ' ';
-
-
-
-numberButtons.forEach(button => {
-    button.addEventListener('click', (e) => {
-        calcScreen.textContent += +e.target.value;
-       
-        if(currentOperator === ' '){
-            firstNumber = +calcScreen.textContent;
-        }
-        else{
-            secondNumber = +calcScreen.textContent;
-        }
-
-    })
-
+inputBtns.forEach(inputBtn => {
+    if (inputBtn.classList.length === 0) {
+        inputBtn.addEventListener('click', () => sendNumberValue(inputBtn.value));
+    } else if (inputBtn.classList.contains('operator')) {
+        inputBtn.addEventListener('click', () => useOperator(inputBtn.value));
+    } else if (inputBtn.classList.contains('decimal')) {
+        inputBtn.addEventListener('click', () => addDecimal());
+    }
 });
 
-//It is add value
-function plusOp(a,b){
-    operatorBtn[0].addEventListener('click', (e) => {
-        a = +firstNumber;
-        b = +secondNumber;
-        operatorVal = e.target.id;
-    operate(operatorVal,a,b);
-    calcScreen.textContent = ' ';
 
-        console.log(a);
-        console.log(b);
-       
-    });
 
-   
+function resetAll() {
+    calculatorDisplay.textContent = '0';
+    firstValue = 0;
+    operatorValue = ' ';
+    awaitingNextValue = false;
 }
 
-clearBtn.addEventListener('click', () => {
-    clearScreen();
-})
-
-
-// btnEqual.addEventListener('click', () => {
-//     calcScreen.textContent = 'Equal sign'
-// })
-
-function clearScreen() {
-    calcScreen.textContent = ' ';
-    firstNumber = 0;
-    secondNumber = 0;
-    currentOperator = ' ';
-}
+clearButton.addEventListener('click', () => resetAll());
