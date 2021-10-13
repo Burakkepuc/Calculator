@@ -75,6 +75,6 @@ function useOperator(operator) {
 ```
 
 
-[Live Preview: ](https://burakkepuc.github.io/Calculator/):point_left:  
+Live Preview:[Project Demo](https://burakkepuc.github.io/Calculator/):point_left:  
  
  
